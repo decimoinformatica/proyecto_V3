@@ -1,0 +1,16 @@
+{% extends 'usuarios/base.html' %}  <!-- Cambia esta línea -->
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h2>Bienvenido, {{ user.first_name }}</h2>
+        </div>
+        <div class="card-body">
+            <p class="card-text"><strong>Rol:</strong> {{ user.rol }}</p>
+            <p class="card-text"><strong>Correo:</strong> {{ user.email }}</p>
+            <a href="{% url 'logout' %}" class="btn btn-danger">Cerrar sesión</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

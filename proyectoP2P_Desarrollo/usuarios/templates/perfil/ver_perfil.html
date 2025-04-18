@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Perfil</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Degradado azul para encabezados */
+        .card-header {
+            background: linear-gradient(135deg, #007bff, #00c6ff);
+            color: white;
+        }
+
+        .card-title, .card-header h5 {
+            color: white;
+            margin: 0;
+        }
+
+        .perfil-imagen {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto;
+            position: relative; /* Necesario para colocar el icono del lápiz */
+        }
+
+        body {
+            background-color: white;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #007bff, #00c6ff);
+        }
+
+        .navbar-icon {
+            width: 30px;
+            height: 30px;
+            margin: 0 60px;
+        }
+
+        .navbar-profile {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .search-bar {
+            width: 200px;
+            background-color: white;
+            border-radius: 20px;
+            padding: 5px 15px;
+            color: #888;
+        }
+
+        .dropdown-menu {
+            right: 0;
+            left: auto;
+        }
+
+        /* Posicionamiento del icono de lápiz */
+        .edit-icon {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    {% load static %}
+
+    <!-- Menu Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark px-4">
+        <div class="d-flex align-items-center">
+            <input type="text" class="form-control search-bar" placeholder="Buscar...">
+        </div>
+
+        <div class="mx-auto d-flex align-items-center">
+            <a href="{% url 'dashboard' %}">
+                <img src="{% static 'img/casa.png' %}" class="navbar-icon" alt="Inicio">
+            </a>
+            <img src="{% static 'img/grupo.png' %}" class="navbar-icon" alt="Grupo">
+            <img src="{% static 'img/mensajero.png' %}" class="navbar-icon" alt="Mensajero">
+            <img src="{% static 'img/notificacion.png' %}" class="navbar-icon" alt="Notificación">
+        </div>
+
+        <div class="ml-auto dropdown">
+            <img src="{% static 'img/simbolo.png' %}" class="navbar-profile dropdown-toggle" id="userMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
+                <a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Columna izquierda -->
+            <div class="col-md-4">
+                <div class="text-center mb-4">
+                    <div class="position-relative">
+                        <img src="{% static 'img/simbolo.png' %}" alt="Foto de perfil" class="perfil-imagen">
+                        <!-- Icono de lápiz en la esquina inferior derecha -->
+                        <a href="{% url 'editar_perfil' %}">
+                            <img src="{% static 'img/lapiz.png' %}" alt="Editar" class="edit-icon">
+                        </a>
+                    </div>
+                </div>
+
+                <h3 class="text-center">{{ nombre_completo }}</h3>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Datos del Usuario</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><strong>Fecha de nacimiento:</strong> {{ user.perfil.fecha_nacimiento }}</li>
+                            <li><strong>Dirección:</strong> {{ user.perfil.direccion }}</li>
+                            <li><strong>Correo electrónico:</strong> {{ user.email }}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Ingresos y Egresos</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Ingresos:</strong> ${{ user.perfil.ingresos }}</p>
+                        <p><strong>Egresos:</strong> ${{ user.perfil.egresos }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna derecha -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Historial Crediticio</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Score</th>
+                                    <th>Reporte</th>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if historial_crediticio %}
+                                    {% for historial in historial_crediticio %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ historial.score }}</td>
+                                        <td>{{ historial.reporte }}</td>
+                                        <td>{{ historial.fecha }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center">No hay historial crediticio disponible.</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.5/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
